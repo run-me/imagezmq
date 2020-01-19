@@ -13,10 +13,10 @@ ap.add_argument("-s",
 
 args = vars(ap.parse_args())
 
-sender = ImageSender(connect_to='tcp://{}:5555'.format(args['server-ip']))
+sender = ImageSender(connect_to='tcp://{}:5555'.format(args['server_ip']))
 
 rpi_name = socket.gethostname()
-vs = VideoStream(usePiCamera=True).start()
+vs = VideoStream(usePiCamera=False).start()
 time.sleep(2.0)
 
 while True:
