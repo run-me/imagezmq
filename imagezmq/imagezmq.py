@@ -14,7 +14,7 @@ import numpy as np
 import cv2
 
 
-class ImageSender():
+class ImageSender:
     """Opens a zmq socket and sends images
 
     Opens a zmq (REQ or PUB) socket on the image sending computer, often a
@@ -36,7 +36,7 @@ class ImageSender():
                           if False, a PUB socket will be created
     """
 
-    def __init__(self, connect_to='tcp://127.0.0.1:5555', REQ_REP = True):
+    def __init__(self, connect_to='tcp://127.0.0.1:5555', REQ_REP=True):
         """Initializes zmq socket for sending images to the hub.
 
         Expects an appropriate ZMQ socket at the connect_to tcp:port address:
@@ -47,12 +47,12 @@ class ImageSender():
         a matching SUB socket on the ImageHub().
         """
 
-        if REQ_REP == True:
-             # REQ/REP mode, this is a blocking scenario
-             self.init_reqrep(connect_to)
+        if REQ_REP:
+            # REQ/REP mode, this is a blocking scenario
+            self.init_reqrep(connect_to)
         else:
-             #PUB/SUB mode, non-blocking scenario
-             self.init_pubsub(connect_to)
+            # PUB/SUB mode, non-blocking scenario
+            self.init_pubsub(connect_to)
 
     def init_reqrep(self, address):
         """ Creates and inits a socket in REQ/REP mode
@@ -65,7 +65,7 @@ class ImageSender():
 
         # Assign corresponding send methods for REQ/REP mode
         self.send_image = self.send_image_reqrep
-        self.send_jpg   = self.send_jpg_reqrep
+        self.send_jpg = self.send_jpg_reqrep
 
     def init_pubsub(self, address):
         """Creates and inits a socket in PUB/SUB mode
@@ -78,7 +78,7 @@ class ImageSender():
 
         # Assign corresponding send methods for PUB/SUB mode
         self.send_image = self.send_image_pubsub
-        self.send_jpg   = self.send_jpg_pubsub
+        self.send_jpg = self.send_jpg_pubsub
 
     def send_image(self, msg, image):
         """ This is a placeholder. This method will be set to either a REQ/REP
@@ -202,7 +202,7 @@ class ImageHub():
                           if False, a SUB socket will be created
     """
 
-    def __init__(self, open_port='tcp://*:5555', REQ_REP = True):
+    def __init__(self, open_port='tcp://*:5555', REQ_REP=True):
         """Initializes zmq socket to receive images and text.
 
         Expects an appropriate ZMQ socket at the senders tcp:port address:
@@ -214,11 +214,11 @@ class ImageHub():
 
         """
         self.REQ_REP = REQ_REP
-        if REQ_REP ==True:
-            #Init REP socket for blocking mode
+        if REQ_REP:
+            # Init REP socket for blocking mode
             self.init_reqrep(open_port)
         else:
-            #Connect to PUB socket for non-blocking mode
+            # Connect to PUB socket for non-blocking mode
             self.init_pubsub(open_port)
 
     def init_reqrep(self, address):
@@ -230,13 +230,13 @@ class ImageHub():
         self.zmq_socket.bind(address)
 
     def init_pubsub(self, address):
-       """ Initialize Hub in PUB/SUB mode
-       """
-       socketType = zmq.SUB
-       self.zmq_context = SerializingContext()
-       self.zmq_socket = self.zmq_context.socket(socketType)
-       self.zmq_socket.setsockopt(zmq.SUBSCRIBE, b'')
-       self.zmq_socket.connect(address)
+        """ Initialize Hub in PUB/SUB mode
+        """
+        socketType = zmq.SUB
+        self.zmq_context = SerializingContext()
+        self.zmq_socket = self.zmq_context.socket(socketType)
+        self.zmq_socket.setsockopt(zmq.SUBSCRIBE, b'')
+        self.zmq_socket.connect(address)
 
     def connect(self, open_port):
         """In PUB/SUB mode, the hub can connect to multiple senders at the same
@@ -247,8 +247,8 @@ class ImageHub():
              open_port: the PUB socket to connect to.
         """
 
-        if self.REQ_REP == False:
-            #This makes sense only in PUB/SUB mode
+        if not self.REQ_REP:
+            # This makes sense only in PUB/SUB mode
             self.zmq_socket.setsockopt(zmq.SUBSCRIBE, b'')
             self.zmq_socket.connect(open_port)
             self.zmq_socket.subscribe(b'')
