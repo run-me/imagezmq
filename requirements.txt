@@ -1,0 +1,4 @@
+# project requirements
+imutils
+zmq
+opencv-contrib-python
