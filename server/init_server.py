@@ -32,13 +32,17 @@ while True:
     image_hub.send_reply(b'OK')
     if rpi_name not in last_active.keys():
         print(f"[INFO] receiving data from {rpi_name}")
-    frame = imutils.resize(frame, width=400)
+    frame = imutils.resize(frame, width=300)
     (h, w) = frame.shape[:2]
 
     # update the new frame in frame dictionary
     frame_dict[rpi_name] = frame
 
     montages = build_montages(frame_dict.values(), (w, h), (mW, mH))
+
+    # display montages
+    for (i, montage) in enumerate(montages):
+        cv2.imshow("montage {}".format(i), montage)
 
     key = cv2.waitKey(1)
 
